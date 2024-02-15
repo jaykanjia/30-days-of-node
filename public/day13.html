@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>WebSocket Echo</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+	</head>
+	<body
+		class="bg-neutral-900 text-neutral-50 min-h-screen grid place-content-center"
+	>
+		<main class="flex flex-col gap-8">
+			<h1 class="text-4xl">WebSocket Echo</h1>
+			<form onsubmit="sendMessage()" class="flex gap-4 items-center">
+				<input
+					type="text"
+					name="messageInput"
+					id="messageInput"
+					autofocus
+					class="block flex-1 rounded-md ring-neutral-500 border bg-transparent py-1.5 pl-1 text-neutral-200 placeholder:text-neutral-400 focus:ring-0 sm:text-sm sm:leading-6"
+					placeholder="Enter your Message"
+				/>
+				<button
+					type="submit"
+					class="rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
+				>
+					Send
+				</button>
+			</form>
+		</main>
+		<script>
+			const socket = new WebSocket("ws://localhost:5001");
+
+			socket.onopen = function (event) {
+				console.log("WebSocket connection established.");
+			};
+
+			socket.onmessage = function (event) {
+				console.log("Received message:", event.data);
+			};
+
+			socket.onerror = function (error) {
+				console.error("WebSocket error:", error);
+			};
+
+			function sendMessage() {
+				const message = document.getElementById("messageInput").value;
+				socket.send(message);
+			}
+		</script>
+	</body>
+</html>
