@@ -13,7 +13,7 @@ connectToMongoDB();
 
 app.use(express.json());
 // defining the routes
-app.use("/api/user", userRoute);
+app.use("/api/users", userRoute);
 
 app.get("/", (req, res) => {
 	res.send("Welcome");

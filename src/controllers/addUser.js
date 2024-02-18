@@ -1,4 +1,4 @@
-const User = require("../db/models/User");
+const { User } = require("../db/models");
 
 /**
  * Adds a new user to the MongoDB database
