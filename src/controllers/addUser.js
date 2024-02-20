@@ -12,8 +12,7 @@ async function addUserToDatabase({ username, email }) {
 		const userData = await newUser.save();
 		return userData;
 	} catch (err) {
-		console.log(err);
-		return;
+		return { error: err.message };
 	}
 }
 
@@ -38,7 +37,7 @@ async function addUser(req, res) {
 
 	const userData = await addUserToDatabase({ username, email });
 
-	if (!userData) return res.status(500).send("Something went wrong...");
+	if (userData.error) return res.status(500).send(userData.error);
 
 	return res.json({
 		message: "New User added successfully",
