@@ -4,6 +4,7 @@ const {
 	getAllProducts,
 	deleteProduct,
 	updateProduct,
+	getProductsPopulatedWithCategory,
 } = require("../controllers/productController");
 const Product = require("../db/models/Product");
 
@@ -23,8 +24,10 @@ router.get("/", async (req, res) => {
 // createProduct
 router.post("/", async (req, res) => {
 	try {
-		const newProduct = new Product(req.body);
-		const response = await createProduct(newProduct);
+		const response = await createProduct(req.body);
+		if (response) {
+			return res.json({ message: "New Product Added" });
+		}
 		return res.json({ message: "something went wrong..." });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal server error" });
@@ -56,6 +59,18 @@ router.delete("/:id", async (req, res) => {
 		return res.json({ message: "something went wrong..." });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal server error" });
+	}
+});
+
+router.get("/withCategory", async (req, res) => {
+	try {
+		const products = await getProductsPopulatedWithCategory();
+		if (products) {
+			return res.json({ products, count: products.length });
+		}
+		return res.status(500).json({ message: "something went wrong..." });
+	} catch (error) {
+		res.status(500).json({ message: "Internal server error" });
 	}
 });
 

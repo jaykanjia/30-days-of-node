@@ -1,12 +1,30 @@
+const { Category } = require("../db/models");
 const Product = require("../db/models/Product");
+const { createCategory } = require("./categoryController");
 
 /**
  * Creates a new product in MongoDB
  * @param {Object} product - Product object with properties name, price, and quantity
  */
 async function createProduct(product) {
+	const { category, ...rest } = product;
+	let categoryId = null;
+	if (category) {
+		const isCategory = await Category.find({ name: category });
+		if (isCategory) {
+			console.log({ isCategory });
+			categoryId = isCategory[0]._id;
+		} else {
+			const response = await createCategory();
+			categoryId = response._id;
+			console.log({ response: response._id });
+		}
+	}
+	console.log({ categoryId });
 	try {
-		const response = await product.save();
+		const newProduct = new Product({ ...rest, category: categoryId });
+		console.log(newProduct);
+		const response = await newProduct.save();
 		return response;
 	} catch (error) {
 		console.log(error);
@@ -60,9 +78,26 @@ async function deleteProduct(productId) {
 	}
 }
 
+/**
+ * Retrieves all products with populated category details from MongoDB
+ * @returns {Array} - Array of product objects with populated category details
+ */
+async function getProductsPopulatedWithCategory() {
+	// Your implementation here
+	try {
+		const products = await Product.find({}).populate("category");
+		console.log(products);
+		return products;
+	} catch (error) {
+		console.log(error);
+		return Error(error);
+	}
+}
+
 module.exports = {
 	createProduct,
 	getAllProducts,
 	deleteProduct,
 	updateProduct,
+	getProductsPopulatedWithCategory,
 };
