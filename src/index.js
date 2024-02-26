@@ -5,6 +5,7 @@ const connectToMongoDB = require("./db/config");
 
 // import routes
 const userRoute = require("./routes/userRoute");
+const productRoute = require("./routes/productRoute");
 
 const PORT = process.env.PORT || 5001;
 
@@ -14,6 +15,7 @@ connectToMongoDB();
 app.use(express.json());
 // defining the routes
 app.use("/api/users", userRoute);
+app.use("/api/products", productRoute);
 
 app.get("/", (req, res) => {
 	res.send("Welcome");
