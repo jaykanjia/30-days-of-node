@@ -5,6 +5,8 @@ const {
 	deleteProduct,
 	updateProduct,
 	getProductsPopulatedWithCategory,
+	createProductNameIndex,
+	getProductStatistics,
 } = require("../controllers/productController");
 const Product = require("../db/models/Product");
 
@@ -70,7 +72,35 @@ router.get("/withCategory", async (req, res) => {
 		}
 		return res.status(500).json({ message: "something went wrong..." });
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error" });
+		return res.status(500).json({ message: "Internal server error" });
+	}
+});
+
+router.get("/createIndex", async (req, res) => {
+	try {
+		const response = await createProductNameIndex();
+		if (response) {
+			return res.json({
+				message: 'Index on "name" field created successfully.',
+			});
+		}
+		return res.status(500).json({ message: "something went wrong..." });
+	} catch (error) {
+		return res.status(500).json({ message: "Internal server error" });
+	}
+});
+
+router.get("/statistics", async (req, res) => {
+	try {
+		const aggregatedResults = await getProductStatistics();
+		if (aggregatedResults) {
+			return res.json({
+				aggregatedResults,
+			});
+		}
+		return res.status(500).json({ message: "something went wrong..." });
+	} catch (error) {
+		return res.status(500).json({ message: "Internal server error" });
 	}
 });
 

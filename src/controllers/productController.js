@@ -94,10 +94,57 @@ async function getProductsPopulatedWithCategory() {
 	}
 }
 
+/**
+ * Creates an index on the "name" field of the "Product" collection in MongoDB
+ */
+async function createProductNameIndex() {
+	// Your implementation here
+	try {
+		await Product.createIndexes({ name: 1 }); // Creating index on the "name" field in ascending order
+		return true;
+	} catch (error) {
+		console.log('Error creating index on "name" field:', error);
+		return Error(error);
+	}
+}
+
+/**
+ * Executes an aggregation pipeline to calculate product statistics
+ * @returns {Object} - Aggregated product statistics
+ */
+async function getProductStatistics() {
+	// Your implementation here
+	try {
+		const pipeline = [
+			{
+				$group: {
+					_id: null, // Grouping all documents together
+					totalProducts: { $sum: 1 }, // Counting total number of products
+					averagePrice: { $avg: "$price" }, // Calculating average price
+					highestQuantity: { $max: "$quantity" }, // Finding highest quantity
+				},
+			},
+		];
+
+		const results = await Product.aggregate(pipeline);
+
+		if (results.length > 0) {
+			return results[0]; // Returning the first (and only) result object
+		} else {
+			return null; // Returning null if no results found
+		}
+	} catch (error) {
+		console.error("Error calculating product statistics:", error);
+		throw error; // Rethrow the error for handling in the calling function
+	}
+}
+
 module.exports = {
 	createProduct,
 	getAllProducts,
 	deleteProduct,
 	updateProduct,
 	getProductsPopulatedWithCategory,
+	createProductNameIndex,
+	getProductStatistics,
 };
