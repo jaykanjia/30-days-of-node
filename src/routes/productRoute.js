@@ -9,7 +9,7 @@ const {
 	getProductStatistics,
 } = require("../controllers/productController");
 const Product = require("../db/models/Product");
-const authenticateAndAuthorize = require("../middleware");
+const { authenticateAndAuthorize } = require("../middleware");
 
 // getAllProducts
 router.get("/", async (req, res) => {
